@@ -1,6 +1,4 @@
 #include <iostream>
-#include "module1/line.h"
-#include "module2/line2.h"
 
 using namespace std;
 

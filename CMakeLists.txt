@@ -1,78 +1,139 @@
+# CMakeList.txt : Top-level CMake project file, do global configuration
+# and include sub-projects here.
+#
 cmake_minimum_required(VERSION 3.22)
-cmake_host_system_information(RESULT XOS_ID QUERY DISTRIB_ID)
-# 设置c++标准为c++23
+
+project(
+        TEMPLATE
+        VERSION 0.1.0
+        DESCRIPTION "C++ based ethereum library"
+        LANGUAGES CXX
+)
+
 set(CMAKE_CXX_STANDARD 23)
-# ON 表示必须支持选定的c++标准
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# 选项表示是否启用编译器的扩展功能，扩展功能会降低可移植性。比如：inline namespace、constexpr、noexcept等C++11标准引入的新特性等；
 set(CMAKE_CXX_EXTENSIONS OFF)
-# 设置c标准选项
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
-# Makefile文件是否输出详细的编译信息，还是只输出必要信息。默认为ON，即输出详细信息。
+
 set(CMAKE_VERBOSE_MAKEFILE OFF)
-# 生成编译命令的JSON文件，可以用于一些代码编辑器的自动补全和语法检查功能。默认根目录下的：compile_commands.json 文件。
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-# macos设置依赖库搜索路径
-#set(CMAKE_PREFIX_PATH /path/to/library1;/path/to/library2 ${CMAKE_PREFIX_PATH})
-#set(CMAKE_PREFIX_PATH /opt/homebrew/lib ${CMAKE_PREFIX_PATH})
-# 设置项目名
-project(TEMPLATE CXX C)
-#add_definitions("-DCPPHTTPLIB_OPENSSL_SUPPORT")
-#set(CMAKE_C_COMPILER gcc)
-#set(CMAKE_CXX_COMPILER g++)
-#set(CMAKE_C_COMPILER clang)
-#set(CMAKE_CXX_COMPILER clang++)
-# 这些选项变量都是定义的，定义的这些变量可以通过 ${变量名} 的方式来使用。这里它的默认值就是OFF
-# 如果要启用某个选项，可以在cmake命令后面加上 -D变量名=ON，比如-DXENABLE_CODE_COVERAGE=ON,或者这里直接将OFF改为ON
-option(DISABLE_CORE_SIGNAL_CAPTURE "disable core signal capture" OFF)# core signal capture
-option(DISABLE_SIGNAL_CAPTURE "disable all signal capture" OFF)# ON则禁用所有信号捕获
-option(XBUILD_TEST "Enable building tests" OFF) # UNIT TEST disabled as default, use build option test to enable it.
 
-# LIBRARY_OUTPUT_DIRECTORY是CMake内置的变量之一。它用于指定构建生成库文件（静态库或共享库）的输出目录
-# 如果您没有显式地设置这个变量，CMake会默认将静态库和共享库都放置在${CMAKE_BINARY_DIR}/lib/目录下
-# 其中 CMAKE_BINARY_DIR是CMake内置的变量之一。它表示运行cmake命令时所在的构建目录.
-# RUNTIME_OUTPUT_DIRECTORY 变量用于指定生成的可执行文件和共享库等运行时输出目录。而 CMAKE_SOURCE_DIR 变量表示项目根目录的路径。
-# RUNTIME_OUTPUT_DIRECTORY 默认为 CMAKE_SOURCE_DIR/bin
-set(EXECUTABLE_OUTPUT_PATH ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
-set(LIBRARY_OUTPUT_PATH ${TEMPLATE_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
-set(LIBRARY_OUTPUT_DIRECTORY ${TEMPLATE_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
-set(RUNTIME_OUTPUT_DIRECTORY ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
+if (NOT CMAKE_CXX_COMPILER)
+    message(FATAL_ERROR "C++ Compiler not found")
+endif()
 
+set(ROOT_LIBRARY template1)
 
-message(STATUS "CMAKE_BUILD_TYPE:" ${CMAKE_BUILD_TYPE})
-message(STATUS "CMAKE_SYSTEM_NAME:" ${CMAKE_SYSTEM_NAME})
-message(STATUS "CMAKE_CXX_COMPILER_ID:" ${CMAKE_CXX_COMPILER_ID})
-message(STATUS "XBUILD_TEST:" ${XBUILD_TEST})
-message(STATUS "DISABLE_CORE_SIGNAL_CAPTURE:" ${DISABLE_CORE_SIGNAL_CAPTURE})
-message(STATUS "DISABLE_SIGNAL_CAPTURE:" ${DISABLE_SIGNAL_CAPTURE})
-message(STATUS "LIBRARY_OUTPUT_DIRECTORY:" ${LIBRARY_OUTPUT_DIRECTORY})
-message(STATUS "RUNTIME_OUTPUT_DIRECTORY:" ${RUNTIME_OUTPUT_DIRECTORY})
-message(STATUS "CMAKE_PREFIX_PATH:" ${CMAKE_PREFIX_PATH})
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+    # set common options for Clang or GNUCXX
+    add_compile_options(
+            $<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:-fexceptions>
+            $<$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>:-frtti>
+    )
 
-include_directories(src/services)
-include_directories(src/programs)
-include_directories(src/logic)
-include_directories(src/logic/demo)
-include_directories(src/logic/demo2)
-include_directories(SYSTEM /usr/local/include)
-include_directories(SYSTEM third_party/)
+    # common compiling options
+    add_compile_options(
+            -Wall
+            -Wextra
+            -Wpedantic
+            -Werror
+            -fno-strict-aliasing
+            -fthreadsafe-statics
+            -pthread
+            -fstack-protector-strong
+            -fno-short-enums
+    )
 
-link_directories(${LIBRARY_OUTPUT_DIRECTORY})
+    add_definitions(-D_GNU_SOURCE)
 
-add_subdirectory(src/)
-add_subdirectory(third_party/)
+    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+        add_compile_options(-Wabstract-final-class -Wshift-overflow -Wint-to-void-pointer-cast)
+    endif()
 
-if (XBUILD_TEST)
-    enable_testing()
+    if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+        add_compile_options(-Wsuggest-final-methods -Wsuggest-final-types -Wsuggest-override)
+        add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>)
+        add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_DEBUG_PEDANTIC>)
+    endif()
 
-    if (${XOS_ID} MATCHES "centos")
-        include_directories(SYSTEM src/libraries/googletest/googletest/include)
-        include_directories(SYSTEM src/libraries/googletest/googlemock/include)
-    endif ()
-    include_directories(.)
+    # options for Debug
+    add_compile_options($<$<CONFIG:Debug>:-fno-omit-frame-pointer>)
 
-    add_subdirectory(tests)
+    # options for Release
+    add_compile_options($<$<CONFIG:Release>:-ffunction-sections>)
+    add_compile_options($<$<CONFIG:Release>:-fdata-sections>)
 
+    # options for RelWithDebInfo
+    add_compile_options($<$<CONFIG:Release>:-ffunction-sections>)
+    add_compile_options($<$<CONFIG:Release>:-fdata-sections>)
+
+elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
+    # common compile options
+    add_compile_options(
+            /Zc:__cplusplus       # https://docs.microsoft.com/en-us/cpp/build/reference/zc-cplusplus
+            /Zc:externConstexpr   # https://docs.microsoft.com/en-us/cpp/build/reference/zc-externconstexpr
+            /Zc:referenceBinding  # https://docs.microsoft.com/en-us/cpp/build/reference/zc-referencebinding-enforce-reference-binding-rules
+            /Zc:inline            # https://docs.microsoft.com/en-us/cpp/build/reference/zc-inline-remove-unreferenced-comdat
+            /Zc:rvalueCast        # https://docs.microsoft.com/en-us/cpp/build/reference/zc-rvaluecast-enforce-type-conversion-rules
+            /Zc:strictStrings     # https://docs.microsoft.com/en-us/cpp/build/reference/zc-strictstrings-disable-string-literal-type-conversion
+            /Zc:ternary           # https://docs.microsoft.com/en-us/cpp/build/reference/zc-ternary
+            /Zc:throwingNew       # https://docs.microsoft.com/en-us/cpp/build/reference/zc-throwingnew-assume-operator-new-throws
+            /Zc:char8_t
+            /Zc:hiddenFriend
+            /permissive-          # https://blogs.msdn.microsoft.com/vcblog/2016/11/16/permissive-switch/
+            # https://blogs.msdn.microsoft.com/vcblog/2017/09/11/two-phase-name-lookup-support-comes-to-msvc/
+            # https://docs.microsoft.com/en-us/cpp/build/reference/permissive-standards-conformance
+            /volatile:iso         # https://docs.microsoft.com/en-us/cpp/build/reference/volatile-volatile-keyword-interpretation
+            /GS
+            /Zi
+            /EHsc
+            /fp:precise
+            /errorReport:prompt
+            /diagnostics:caret    # https://docs.microsoft.com/en-us/cpp/build/reference/diagnostics-compiler-diagnostic-options
+            /utf-8                # https://docs.microsoft.com/en-us/cpp/build/reference/utf-8-set-source-and-executable-character-sets-to-utf-8
+            /WL                   # https://docs.microsoft.com/en-us/cpp/build/reference/wl-enable-one-line-diagnostics
+    )
+
+    if (CMAKE_CXX_FLAGS MATCHES "/W[0-3]")
+        string(REGEX REPLACE "/W[0-3]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    else()
+        add_compile_options(/W4)
+    endif()
+else()
+    message(FATAL_ERROR "Not supported C++ Compiler: " ${CMAKE_CXX_COMPILER_ID})
+endif()
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+    add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -DNOMINMAX -D_WIN32_WINNT=0x0600 -DWIN32_LEAN_AND_MEAN)
 endif ()
+
+#find_package(Threads REQUIRED)
+#find_package(fmt CONFIG REQUIRED)
+#find_package(range-v3 CONFIG REQUIRED)
+#find_package(CryptoPP REQUIRED)
+
+#include(ExternalProject)
+#
+#ExternalProject_Add(
+#        ABC
+#        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/abc
+#        BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/third_party/abc/build
+#        CMAKE_ARGS
+#        -DCMAKE_BUILD_TYPE:STRING=${CMAKE_BUILD_TYPE}
+#        INSTALL_COMMAND ""
+#)
+#add_library(abc STATIC IMPORTED)
+#set_property(TARGET abc PROPERTY IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/third_party/abc/build/libabc.a)
+#add_dependencies(abc ABC)
+
+#include_directories(third_party/abc/include)
+include_directories(include)
+
+add_subdirectory(src)
+
+if (WITH_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
+# 在CMakeLists.txt文件中为template1目标添加源文件
+add_library(template1 main.cpp)
