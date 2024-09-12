@@ -35,10 +35,10 @@ option(XBUILD_TEST "Enable building tests" OFF) # UNIT TEST disabled as default,
 # 其中 CMAKE_BINARY_DIR是CMake内置的变量之一。它表示运行cmake命令时所在的构建目录.
 # RUNTIME_OUTPUT_DIRECTORY 变量用于指定生成的可执行文件和共享库等运行时输出目录。而 CMAKE_SOURCE_DIR 变量表示项目根目录的路径。
 # RUNTIME_OUTPUT_DIRECTORY 默认为 CMAKE_SOURCE_DIR/bin
-set(EXECUTABLE_OUTPUT_PATH ${XCRAWLER_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
-set(LIBRARY_OUTPUT_PATH ${XCRAWLER_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
-set(LIBRARY_OUTPUT_DIRECTORY ${XCRAWLER_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
-set(RUNTIME_OUTPUT_DIRECTORY ${XCRAWLER_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
+set(EXECUTABLE_OUTPUT_PATH ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
+set(LIBRARY_OUTPUT_PATH ${TEMPLATE_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
+set(LIBRARY_OUTPUT_DIRECTORY ${TEMPLATE_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
+set(RUNTIME_OUTPUT_DIRECTORY ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
 
 
 message(STATUS "CMAKE_BUILD_TYPE:" ${CMAKE_BUILD_TYPE})
@@ -53,6 +53,9 @@ message(STATUS "CMAKE_PREFIX_PATH:" ${CMAKE_PREFIX_PATH})
 
 include_directories(src/services)
 include_directories(src/programs)
+include_directories(src/logic)
+include_directories(src/logic/demo)
+include_directories(src/logic/demo2)
 include_directories(SYSTEM /usr/local/include)
 include_directories(SYSTEM third_party/)
 

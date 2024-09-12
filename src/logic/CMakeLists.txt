@@ -1,4 +1,4 @@
 # primary logic
 
-add_subdirectory(xdemo)
-add_subdirectory(xdemo2)
+add_subdirectory(demo)
+add_subdirectory(demo2)
