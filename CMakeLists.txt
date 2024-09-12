@@ -21,8 +21,6 @@ if (NOT CMAKE_CXX_COMPILER)
     message(FATAL_ERROR "C++ Compiler not found")
 endif()
 
-set(ROOT_LIBRARY template1)
-
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     # set common options for Clang or GNUCXX
     add_compile_options(
@@ -126,14 +124,25 @@ endif ()
 #add_dependencies(abc ABC)
 
 #include_directories(third_party/abc/include)
+
+set(EXECUTABLE_OUTPUT_PATH ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
+set(LIBRARY_OUTPUT_PATH ${TEMPLATE_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
+set(LIBRARY_OUTPUT_DIRECTORY ${TEMPLATE_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
+set(RUNTIME_OUTPUT_DIRECTORY ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
+
+
+message(STATUS "CMAKE_BUILD_TYPE:" ${CMAKE_BUILD_TYPE})
+message(STATUS "CMAKE_SYSTEM_NAME:" ${CMAKE_SYSTEM_NAME})
+message(STATUS "CMAKE_CXX_COMPILER_ID:" ${CMAKE_CXX_COMPILER_ID})
+message(STATUS "LIBRARY_OUTPUT_DIRECTORY:" ${LIBRARY_OUTPUT_DIRECTORY})
+message(STATUS "RUNTIME_OUTPUT_DIRECTORY:" ${RUNTIME_OUTPUT_DIRECTORY})
+message(STATUS "CMAKE_PREFIX_PATH:" ${CMAKE_PREFIX_PATH})
+
 include_directories(include)
-
 add_subdirectory(src)
-
+add_subdirectory(application)
 if (WITH_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
 
-# 在CMakeLists.txt文件中为template1目标添加源文件
-add_library(template1 main.cpp)
