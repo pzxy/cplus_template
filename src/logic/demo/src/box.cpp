@@ -8,3 +8,7 @@ void Box::set(double len, double bre, double hei)
     height = hei;
 }
 
+double Box::get() const {
+    return length * breadth * height;
+}
+

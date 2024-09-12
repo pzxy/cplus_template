@@ -1,4 +1,0 @@
-ToolSet: 1.0 (local)Ninja: 1.12.0@/home/nvidia/.cache/JetBrains/RemoteDev/dist/550cab06beb31_CLion-242.20224.214-aarch64/bin/ninja/linux/aarch64/ninja
-Options: 
-
-Options:
