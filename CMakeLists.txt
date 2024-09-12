@@ -1,0 +1,75 @@
+cmake_minimum_required(VERSION 3.22)
+cmake_host_system_information(RESULT XOS_ID QUERY DISTRIB_ID)
+# 设置c++标准为c++23
+set(CMAKE_CXX_STANDARD 23)
+# ON 表示必须支持选定的c++标准
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# 选项表示是否启用编译器的扩展功能，扩展功能会降低可移植性。比如：inline namespace、constexpr、noexcept等C++11标准引入的新特性等；
+set(CMAKE_CXX_EXTENSIONS OFF)
+# 设置c标准选项
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+# Makefile文件是否输出详细的编译信息，还是只输出必要信息。默认为ON，即输出详细信息。
+set(CMAKE_VERBOSE_MAKEFILE OFF)
+# 生成编译命令的JSON文件，可以用于一些代码编辑器的自动补全和语法检查功能。默认根目录下的：compile_commands.json 文件。
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# macos设置依赖库搜索路径
+#set(CMAKE_PREFIX_PATH /path/to/library1;/path/to/library2 ${CMAKE_PREFIX_PATH})
+#set(CMAKE_PREFIX_PATH /opt/homebrew/lib ${CMAKE_PREFIX_PATH})
+# 设置项目名
+project(TEMPLATE CXX C)
+#add_definitions("-DCPPHTTPLIB_OPENSSL_SUPPORT")
+#set(CMAKE_C_COMPILER gcc)
+#set(CMAKE_CXX_COMPILER g++)
+#set(CMAKE_C_COMPILER clang)
+#set(CMAKE_CXX_COMPILER clang++)
+# 这些选项变量都是定义的，定义的这些变量可以通过 ${变量名} 的方式来使用。这里它的默认值就是OFF
+# 如果要启用某个选项，可以在cmake命令后面加上 -D变量名=ON，比如-DXENABLE_CODE_COVERAGE=ON,或者这里直接将OFF改为ON
+option(DISABLE_CORE_SIGNAL_CAPTURE "disable core signal capture" OFF)# core signal capture
+option(DISABLE_SIGNAL_CAPTURE "disable all signal capture" OFF)# ON则禁用所有信号捕获
+option(XBUILD_TEST "Enable building tests" OFF) # UNIT TEST disabled as default, use build option test to enable it.
+
+# LIBRARY_OUTPUT_DIRECTORY是CMake内置的变量之一。它用于指定构建生成库文件（静态库或共享库）的输出目录
+# 如果您没有显式地设置这个变量，CMake会默认将静态库和共享库都放置在${CMAKE_BINARY_DIR}/lib/目录下
+# 其中 CMAKE_BINARY_DIR是CMake内置的变量之一。它表示运行cmake命令时所在的构建目录.
+# RUNTIME_OUTPUT_DIRECTORY 变量用于指定生成的可执行文件和共享库等运行时输出目录。而 CMAKE_SOURCE_DIR 变量表示项目根目录的路径。
+# RUNTIME_OUTPUT_DIRECTORY 默认为 CMAKE_SOURCE_DIR/bin
+set(EXECUTABLE_OUTPUT_PATH ${XCRAWLER_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
+set(LIBRARY_OUTPUT_PATH ${XCRAWLER_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
+set(LIBRARY_OUTPUT_DIRECTORY ${XCRAWLER_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
+set(RUNTIME_OUTPUT_DIRECTORY ${XCRAWLER_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
+
+
+message(STATUS "CMAKE_BUILD_TYPE:" ${CMAKE_BUILD_TYPE})
+message(STATUS "CMAKE_SYSTEM_NAME:" ${CMAKE_SYSTEM_NAME})
+message(STATUS "CMAKE_CXX_COMPILER_ID:" ${CMAKE_CXX_COMPILER_ID})
+message(STATUS "XBUILD_TEST:" ${XBUILD_TEST})
+message(STATUS "DISABLE_CORE_SIGNAL_CAPTURE:" ${DISABLE_CORE_SIGNAL_CAPTURE})
+message(STATUS "DISABLE_SIGNAL_CAPTURE:" ${DISABLE_SIGNAL_CAPTURE})
+message(STATUS "LIBRARY_OUTPUT_DIRECTORY:" ${LIBRARY_OUTPUT_DIRECTORY})
+message(STATUS "RUNTIME_OUTPUT_DIRECTORY:" ${RUNTIME_OUTPUT_DIRECTORY})
+message(STATUS "CMAKE_PREFIX_PATH:" ${CMAKE_PREFIX_PATH})
+
+include_directories(src/services)
+include_directories(src/programs)
+include_directories(SYSTEM /usr/local/include)
+include_directories(SYSTEM third_party/)
+
+link_directories(${LIBRARY_OUTPUT_DIRECTORY})
+
+add_subdirectory(src/)
+add_subdirectory(third_party/)
+
+if (XBUILD_TEST)
+    enable_testing()
+
+    if (${XOS_ID} MATCHES "centos")
+        include_directories(SYSTEM src/libraries/googletest/googletest/include)
+        include_directories(SYSTEM src/libraries/googletest/googlemock/include)
+    endif ()
+    include_directories(.)
+
+    add_subdirectory(tests)
+
+endif ()
