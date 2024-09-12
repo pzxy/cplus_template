@@ -1,2 +1,4 @@
 # common module
-#add_subdirectory(googletest)
+if(XBUILD_TEST)
+    add_subdirectory(googletest)
+endif()
