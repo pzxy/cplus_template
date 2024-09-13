@@ -1,6 +1,5 @@
-# cplus_template
+# cpp_template
 c++ project templates
-
 # build
 ```bash
 make build
@@ -12,4 +11,8 @@ make run
 # test
 ```bash
 cd third_party && git clone git@github.com:google/googletest.git
+```
+# log
+```bash
+sudo apt install libspdlog-dev
 ```
