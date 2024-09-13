@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "examples/demo2/module/line2.h"
 using namespace std;
 
 // 成员函数定义，包括构造函数

@@ -140,7 +140,6 @@ message(STATUS "CMAKE_PREFIX_PATH:" ${CMAKE_PREFIX_PATH})
 
 include_directories(include)
 add_subdirectory(src)
-add_subdirectory(application)
 if (WITH_TESTS)
     enable_testing()
     add_subdirectory(tests)
