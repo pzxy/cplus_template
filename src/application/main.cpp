@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-    Box box{};
-    box.set(1,2,3);
-    cout << "a: "<< box.get() << endl;
+    xxx::examples::demo1::Box box{};
+    box.set(1,2.3,5);
+    cout << "this box size is : "<< box.get() << endl;
 }
