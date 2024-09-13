@@ -19,7 +19,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if (NOT CMAKE_CXX_COMPILER)
     message(FATAL_ERROR "C++ Compiler not found")
-endif()
+endif ()
 
 if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     # set common options for Clang or GNUCXX
@@ -45,13 +45,13 @@ if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" OR "${CMAKE_CXX_COMPILER_ID}" MAT
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         add_compile_options(-Wabstract-final-class -Wshift-overflow -Wint-to-void-pointer-cast)
-    endif()
+    endif ()
 
     if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
         add_compile_options(-Wsuggest-final-methods -Wsuggest-final-types -Wsuggest-override)
         add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>)
         add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_DEBUG_PEDANTIC>)
-    endif()
+    endif ()
 
     # options for Debug
     add_compile_options($<$<CONFIG:Debug>:-fno-omit-frame-pointer>)
@@ -93,12 +93,12 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
 
     if (CMAKE_CXX_FLAGS MATCHES "/W[0-3]")
         string(REGEX REPLACE "/W[0-3]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    else()
+    else ()
         add_compile_options(/W4)
-    endif()
-else()
+    endif ()
+else ()
     message(FATAL_ERROR "Not supported C++ Compiler: " ${CMAKE_CXX_COMPILER_ID})
-endif()
+endif ()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS -DNOMINMAX -D_WIN32_WINNT=0x0600 -DWIN32_LEAN_AND_MEAN)
@@ -124,24 +124,33 @@ endif ()
 #add_dependencies(abc ABC)
 
 #include_directories(third_party/abc/include)
+option(WITH_TESTS "Enable testing support" OFF)
 
+# 设置输出路径
 set(EXECUTABLE_OUTPUT_PATH ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
 set(LIBRARY_OUTPUT_PATH ${TEMPLATE_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
 set(LIBRARY_OUTPUT_DIRECTORY ${TEMPLATE_BINARY_DIR}/lib/${CMAKE_SYSTEM_NAME}/)
-set(RUNTIME_OUTPUT_DIRECTORY ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
 
+# 设置运行时输出目录
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/)
 
-message(STATUS "CMAKE_BUILD_TYPE:" ${CMAKE_BUILD_TYPE})
-message(STATUS "CMAKE_SYSTEM_NAME:" ${CMAKE_SYSTEM_NAME})
-message(STATUS "CMAKE_CXX_COMPILER_ID:" ${CMAKE_CXX_COMPILER_ID})
-message(STATUS "LIBRARY_OUTPUT_DIRECTORY:" ${LIBRARY_OUTPUT_DIRECTORY})
-message(STATUS "RUNTIME_OUTPUT_DIRECTORY:" ${RUNTIME_OUTPUT_DIRECTORY})
-message(STATUS "CMAKE_PREFIX_PATH:" ${CMAKE_PREFIX_PATH})
+# 如果需要为不同的构建类型设置不同的输出目录，可以使用以下方式
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/debug)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${TEMPLATE_BINARY_DIR}/bin/${CMAKE_SYSTEM_NAME}/release)
+
+# 显示状态信息
+message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+message(STATUS "CMAKE_SYSTEM_NAME: ${CMAKE_SYSTEM_NAME}")
+message(STATUS "CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "LIBRARY_OUTPUT_DIRECTORY: ${LIBRARY_OUTPUT_DIRECTORY}")
+message(STATUS "RUNTIME_OUTPUT_DIRECTORY: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+message(STATUS "CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+message(STATUS "WITH_TESTS: ${WITH_TESTS}")
 
 include_directories(include)
 add_subdirectory(src)
+add_subdirectory(third_party)
 if (WITH_TESTS)
     enable_testing()
     add_subdirectory(tests)
-endif()
-
+endif ()

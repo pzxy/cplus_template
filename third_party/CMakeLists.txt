@@ -1,1 +1,5 @@
-# third party dependencies
+if (WITH_TESTS)
+    add_subdirectory(googletest)
+    include_directories(SYSTEM googletest/googletest/include/)
+    include_directories(SYSTEM googletest/googlemock/include/)
+endif ()
