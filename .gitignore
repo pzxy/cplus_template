@@ -32,3 +32,4 @@
 *.app
 cbuild
 cmake-build-debug
+third_party/googletest
