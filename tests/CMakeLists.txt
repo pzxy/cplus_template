@@ -1,1 +1,1 @@
-add_subdirectory(demo1_test)
+add_subdirectory(examples)
