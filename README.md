@@ -8,11 +8,22 @@ make build
 ```bash
 make run
 ```
-# test
+# libraries
+## 1. submodule mode
+-  git submodule init
+-  git submodule update --init --recursive
+-  git submodule add <submodule URL> <submodule dir> ，examples：
 ```bash
-cd third_party && git clone git@github.com:google/googletest.git
+ git submodule add https://github.com/google/googletest.git third_party/googletest
 ```
-# log
+## 2. system libraries mode
+examples:
 ```bash
+# Ubuntu
 sudo apt install libspdlog-dev
+# Darwin
+brew install spdlog
 ```
+## 3. binary mode
+1. put the header dir in include
+2. put the lib dir in third_party
