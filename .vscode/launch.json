@@ -11,8 +11,6 @@
             "program": "${workspaceFolder}/build/bin/awesome",
             "args": [],
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "openOnSessionStart"
         },
         {
             "name": "Debug examples (LLDB)",
@@ -21,8 +19,6 @@
             "program": "${workspaceFolder}/build/bin/examples",
             "args": [],
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }
