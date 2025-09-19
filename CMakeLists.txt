@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-#set(CMAKE_TOOLCHAIN_FILE "/root/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
+set(CMAKE_TOOLCHAIN_FILE "/root/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 
 # 确保优先使用vcpkg的包
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)

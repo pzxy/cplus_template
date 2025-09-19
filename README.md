@@ -55,3 +55,35 @@ sudo apt install libgtest-dev -y
 启动有两个地方，一个🐞的地方，这个地方是用launch.json配置的。
 还有一个地方是CMake tools那里，那里是在cursor自己的setting.json中配置的。
 我们用launch.json中的比较好。
+
+# 8. 使用vcpkg来进行所有的包管理
+1. vcpkg安装在那里并不重要，我们要指定vcpkg的路径
+```bash
+set(CMAKE_TOOLCHAIN_FILE "/root/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
+```
+其实就是 CMAKE_TOOLCHAIN_FILE 构建变量的值要指定为vcpkg路径，一般都有VCPKG_ROOT的环境变量来做通用配置。
+
+2. 锁定vcpkg包的版本，其实和其他包管理工具一样，就是锁定版本和仓库
+vcpkg.json
+```bash
+{
+    "name": "cplus_template",
+    "version": "1.0.0",
+    "dependencies": [
+        {
+            "name": "spdlog",
+            "version": "1.12.0"
+        },
+        {
+            "name": "gtest",
+            "version": "1.14.0"
+        }
+    ]
+}
+```
+可以单独制定版本安装
+
+
+
+
+
