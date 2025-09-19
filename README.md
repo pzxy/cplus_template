@@ -42,6 +42,7 @@ sudo apt install clang clangd lldb -y
 vscode安装插件clangd和CodeLLDB
 
 ## 6. 测试
+或者在submodule中使用googletest，不过建议下面这样。
 ```bash
 sudo apt install libgtest-dev -y
 ```
