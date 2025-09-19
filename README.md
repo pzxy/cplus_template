@@ -27,3 +27,8 @@ brew install spdlog
 ## 3. binary mode
 1. put the header dir in include
 2. put the lib dir in third_party
+
+## 4. install libary
+```bash
+apt install -y build-essential ninja-build cmake libspdlog-dev
+```

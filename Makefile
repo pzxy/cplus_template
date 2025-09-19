@@ -1,10 +1,13 @@
 
 clean:
-	@rm -rf cmake-build-debug && mkdir -p cmake-build-debug
-build:
-	@cd cmake-build-debug && cmake .. && make -j4 && cd ..
+	@rm -rf build && mkdir -p build
+build2:
+	@mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug -G Ninja .. && ninja -j4 && cd ..
 run:
-	@./cmake-build-debug/bin/Linux/awesome
-test:
-	@cd cmake-build-debug && cmake -DWITH_TESTS=ON .. && make -j4 && cd ..
+	@./build/bin/awesome
+buildtest:
+	@mkdir -p build && cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_TESTS=ON -G Ninja .. && ninja -j4 && cd ..
+
+
+
 

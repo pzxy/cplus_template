@@ -4,7 +4,6 @@ add_executable(awesome ${src})
 target_link_libraries(
         awesome
         PRIVATE
-        demo1
-        demo2
+        demo
         spdlog::spdlog_header_only
 )
