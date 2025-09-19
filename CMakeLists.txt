@@ -62,8 +62,10 @@ find_package(spdlog REQUIRED)
 add_subdirectory(src)
 add_subdirectory(third_party)
 
-option(WITH_TESTS "Enable testing support" OFF)
+option(WITH_TESTS "Enable testing support" ON)
 if (WITH_TESTS)
+    # 查找系统安装的 GTest
+    find_package(GTest REQUIRED)
     enable_testing()
     add_subdirectory(tests)
     include_directories(tests)

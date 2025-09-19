@@ -32,3 +32,16 @@ brew install spdlog
 ```bash
 apt install -y build-essential ninja-build cmake libspdlog-dev
 ```
+## 5. 跳转和调试
+clang 是编译器，用于生成可执行文件。
+clangd 是语言服务器，用于开发过程中的代码辅助。
+lldb 是调试器，用于运行时程序调试。
+```bash
+sudo apt install clang clangd lldb -y
+```
+vscode安装插件clangd和CodeLLDB
+
+## 6. 测试
+```bash
+sudo apt install libgtest-dev -y
+```
