@@ -69,7 +69,7 @@ vcpkg.json
 
 ```
 
-## 6. 测试（这里可以略过，这个包要用vcpkg管理）
+## 6. 测试
 ```bash
 make buildtest
 chmod +x test.sh
