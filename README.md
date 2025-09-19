@@ -30,7 +30,8 @@ brew install spdlog
 
 ## 4. install libary
 ```bash
-apt install -y build-essential ninja-build cmake libspdlog-dev
+apt install -y build-essential ninja-build cmake pkg-config
+
 ```
 ## 5. 跳转和调试
 clang 是编译器，用于生成可执行文件。
@@ -67,21 +68,23 @@ set(CMAKE_TOOLCHAIN_FILE "/root/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake
 vcpkg.json
 ```bash
 {
-    "name": "cplus_template",
+    "name": "cplus-template",
     "version": "1.0.0",
+    "builtin-baseline": "e9dc13758c9a230a38bf761e27821d087cc6cf98",
     "dependencies": [
         {
             "name": "spdlog",
-            "version": "1.12.0"
+            "version>=": "1.12.0"
         },
         {
             "name": "gtest",
-            "version": "1.14.0"
+            "version>=": "1.14.0"
         }
     ]
 }
+
 ```
-可以单独制定版本安装
+
 
 
 
