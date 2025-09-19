@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_TOOLCHAIN_FILE "/root/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
 
-# 确保优先使用vcpkg的包
+# 优先查找vcpkg中的包
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
 
 project(
@@ -51,7 +51,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 include_directories(
-    include
     src/examples
 )
 find_package(spdlog REQUIRED)
@@ -64,7 +63,6 @@ add_subdirectory(third_party)
 
 option(WITH_TESTS "Enable testing support" ON)
 if (WITH_TESTS)
-    # 查找系统安装的 GTest
     find_package(GTest REQUIRED)
     enable_testing()
     add_subdirectory(tests)
