@@ -75,7 +75,23 @@ make buildtest
 chmod +x test.sh
 ./test.sh
 ```
-或者直接使用CMake tools，点击生成，点击测试，然后也可以单独点击小瓶子。
+1. 或者直接使用CMake tools。
+2. 点击生成，点击测试，然后也可以单独点击小瓶子。
+这种需要在CMakelists中配置,配置上name，这个name就是小瓶子上的名字。
+```bash
+add_test(NAME box_test COMMAND examples --gtest_filter=box_test.*)
+add_test(NAME a_test COMMAND examples --gtest_filter=a_test.*)
+```
+小瓶子的原理其实就是执行ctest命令，我们可以自己执行ctest命令
+```bash
+cd /root/workspace/cplus_template/build/tests
+# -R box_test 正则匹配，只包含box_test
+# -V 输出所有打印详情。
+ctest -R box_test -V
+```
+
+
+
 
 ## 7. 启动
 启动有两个地方，一个🐞的地方，这个地方是用launch.json配置的。

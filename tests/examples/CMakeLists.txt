@@ -4,4 +4,5 @@ add_executable(examples ${src} )
 target_link_libraries(examples PRIVATE demo GTest::gtest GTest::gtest_main)
 
 # 将测试可执行文件注册到 CTest
-add_test(NAME box_test COMMAND examples)
+add_test(NAME box_test COMMAND examples --gtest_filter=box_test.*)
+add_test(NAME a_test COMMAND examples --gtest_filter=a_test.*)
