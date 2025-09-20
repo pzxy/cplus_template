@@ -34,4 +34,5 @@ build/
 cbuild/
 cmake-build-debug
 .cache/
+tests/Testing/
 
